@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Nat Geo - Please Sign In</title>
+        <link rel="icon" type="image/x-icon" href="https://media-mmdb.nationalgeographic.com/static-media/img/favicon.ico">
+        <style type="text/css">
+            .tk-pragmatica-web {
+                font-family: "pragmatica-web", sans-serif;
+            }
+        </style>
+        <link rel="stylesheet" href="https://media-mmdb.nationalgeographic.com/static-media/builds/css/main.css?v=3.18.10">
+
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script>
+            $(function () {
+                $("#locationReference").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: "https://geodata.nationalgeographic.com/search/api/geosearch.jsonp",
+                            dataType: "jsonp",
+                            data: {
+                                q: request.term
+                            },
+                            success: function (data) {
+                                var nameArray = [];
+                                $.each(data.cities, function (key, val) {
+                                    nameArray.push({
+                                        value: val.name + ', ' + val.adminname1 + ', ' + val.countryname,
+                                        label: val.Name,
+                                        id: val.gid
+                                    });
+                                });
+
+                                response(nameArray);
+                            }
+                        });
+                    },
+                    minLength: 3,
+                    focus: function (event, ui) {
+                        $("#project").val(ui.item.name);
+                        return false;
+                    },
+                    select: function (event, ui) {
+                        var data = ui.item.label.split(",");
+                        $("#locationReference").val(data[0]);
+                        $("#state_singup").val(data[1]);
+                        $("#country_singup").val(data[2]);
+
+                        return false;
+                    }
+                });
+            });
+        </script>
+    </head>
+    <style>
+        body,
+        html {
+            height: 100%;
+            background-color: #f9f9f9;
+        }
+
+        .login-container {
+            position: relative;
+            height: 100%;
+        }
+
+        .login-box {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0px 5px 5px #ccc;
+            border-radius: 5px;
+            border-top: 1px solid #e9e9e9;
+        }
+
+        .login-header {
+            text-align: center;
+        }
+
+        .login-header img {
+            width: 75px;
+        }
+
+        #error-message {
+            display: none;
+        }
+
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+
+        .mt3_btn--google {
+            color: #fff;
+            background-color: #4285f4;
+        }
+    </style>
+
+    <body>
+        <div id="error-message" class="alert alert-danger"></div>
+        <section id="content">
+            <div id="login-box" class="tabcontent" style="display:inline;">
+                <div class="mt3_col-lg-offset-4 mt3_col-lg-4">
+                    <div class="logo mt3_row mt3_row-gut-1"></div>
+                    <h1 class="title-text mt3_row mt3_row-mb-30">Please Sign In</h1>
+                    <div id="main" class="mt3_row-gut-1 form-login">
+                        <div class="mt3_row mt3_col-gut mt3_col-lg-12 mt3_row-gut-1 alice_paddinghalf alert-message subtitle-text mt3_hidden"></div>
+                        <div class="mt3_row mt3_row-gut-1 alice_paddinghalf error-message text-center mt3_hidden"></div>
+                        <form id="formView" method="post" role="form" autocomplete="off" action="login">
+                            <div class="form-group mt3_row-gut-1">
+                                <input id="email" type="email" name="username" class="alice_input-form mt3_fullwidth input-email" placeholder="Email Address" autofocus="" required>
+                                <span class="help-block mt3_h5 mt3_color--danger"></span>
+                            </div>
+                            <div class="form-group mt3_row-gut-1">
+                                <input id="password" type="password" name="password" class="alice_input-form mt3_fullwidth input-password" placeholder="Password" required>
+                                <span class="help-block mt3_h5 mt3_color--danger"></span>
+                            </div>
+                            <div class="form-group mt3_row-gut-1">
+                                <button id="btn-login" class="button-login mt3_btn mt3_btn--default mt3_fullwidth">Sign In</button>
+                            </div>
+                        </form>
+                        <div class="mt3_row mt3_row-gut-1">
+                            <div class="mt3_col-5 alice_line-separator">
+                            </div>
+                            <span class="mt3_col-2 text-center">or</span>
+                            <div class="mt3_col-5 alice_line-separator">
+                            </div>
+                        </div>
+                        <div class="mt3_row mt3_row-gut-1">
+                            <button id="btn-facebook" class="button-facebook alice_btn alice_btn-facebook mt3_fullwidth" type="button">
+                                <span class="btn-facebook-icon"></span>
+                                <span>Sign In with Facebook</span>
+                            </button>
+                        </div>
+                        <div class="mt3_row mt3_row-gut-1">
+                            <button id="btn-google" class="button-facebook alice_btn alice_btn-facebook mt3_fullwidth" type="button">
+                                <span class=".icongs.icongs-googleplus"></span>
+                                <span>Log In with Google</span>
+                            </button>
+                        </div>
+                        <div class="mt3_row mt3_row-gut-1 alc_textlinks text-center">
+                            <a class="mt3_textlink" onclick="openTab(event, 'forgot-box')">Forgot Password?</a>
+                        </div>
+                        <div class="mt3_row mt3_row-gut-2 alc_textlinks text-center">
+                            Don't have an account? <a class="mt3_textlink" onclick="openTab(event, 'join-box')">Join Now</a>
+                        </div>
+                        <div class="mt3_row mt3_row-gut-2 alice_col-padding-sm-40 text-center">
+                            <a data-bypass="true" class="mt3_textlink" href="https://secure.customersvc.com/servlet/Show?WESPAGE=am/tablet/ng/ngweb_login.jsp&amp;MSRSMAG=NG&amp;MSDDMOFF=ABTF&amp;MSDVNDID=DGTL&amp;MSDTRACK=SIGN"><b>I haven't logged in before, but I'm a subscribing member.</b></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="join-box" class="tabcontent">
+                <div class="mt3_col-lg-offset-1 mt3_col-lg-10 alice_col-padding-20">
+                    <div class="logo mt3_row-gut-1"></div>
+                    <h1 class="title-text mt3_row-gut-1">Welcome to Our Community</h1>
+                    <h3 class="mt3_col-gut mt3_row-gut-2 subtitle-text">Join now and get access to exclusive content and discounts.</h3>
+                    <div class="mt3_col-gut-1 mt3_col-lg-offset-3 mt3_col-lg-6">
+                        <div class="layout-join">
+                            <div class="mt3_row-gut-2 join-facebook">
+                                <button class="button-join-facebook mt3_btn mt3_btn--facebook mt3_fullwidth" type="button">
+                                    <span class="btn-facebook-icon"></span>
+                                    <span>Connect with Facebook</span>
+                                </button>
+                            </div>
+                            <div class="mt3_row-gut-1 mt3_col-md-12">
+                                <div class="mt3_col-4 alice_line-separator"></div>
+                                <span class="mt3_col-4 text-center">or join with email</span>
+                                <div class="mt3_col-4 alice_line-separator"></div>
+                            </div>
+                        </div>
+                        <form id="defaultForm" enctype="multipart/form-data" autocomplete="off" role="form">
+                            <div class="form-group form-group_avatar">
+
+                                <div id="avatarName" class="input-group">
+                                    <span class="btn btn-primary btn-file">
+                                        <input type="file" name="original" id="avatar" accept="image/*">
+                                        <input type="hidden" name="call_id">
+                                    </span>
+                                    <input type="text" class="form-control_filename" readonly="">
+                                </div>
+                                <span id="reg-avatar" class="avatar mt3_border--default" style="background-image: url(//assets.nationalgeographic.com/ngs-header/build/views/images/nationalGeographic_default_avatar.jpg)"></span>
+                                <div class="form-group_avatar-message mt3_col-6 mt3_col-lg-8 mt3_row-gut-half">
+                                    <span><strong>Choose profile image (optional)</strong></span>
+                                    <b><span class="help-block mt3_color--danger upload_error"></span></b>
+                                </div>
+                                <div class="mt3_col-6 mt3_row-gut-1">
+                                    <button type="button" id="avatar-btn" class="mt3_btn mt3_btn--upload mt3_btn--alternate mt3_fullwidth">
+                                        <div class="mt3_iconandlabel--horizontal">
+                                            <span>Upload Photo</span>
+                                            <span class="btn-upload-icon"></span>
+                                        </div></button>
+                                </div>
+                            </div>
+                            <div class="form-group form-group_firstName mt3_col-12 mt3_row-gut-1 alice_required">
+                                <label for="firstName"></label>
+                                <input class="mt3_fullwidth alice_input-form" type="text" name="firstName" id="firstName_singup" placeholder="First Name" value="" required>
+                                <span class="help-block mt3_color--danger"></span>
+                            </div>
+                            <div class="form-group form-group_lastName mt3_col-12 mt3_row-gut-1 alice_required">
+                                <label for="lastName"></label>
+                                <input class="mt3_fullwidth alice_input-form" type="text" name="lastName" id="lastName_singup" placeholder="Last Name" maxlength="50" value="" required>
+                                <span class="help-block mt3_color--danger"></span>
+                            </div>
+                            <div class="form-group form-group_email mt3_col-12 mt3_row-gut-1 alice_required">
+                                <label for="email"></label>
+                                <input class="mt3_fullwidth alice_input-form" id="email_singup" type="email" name="email" placeholder="Email Address" value="" required>
+                                <span class="help-block mt3_color--danger"></span>
+                            </div>
+                            <div class="form-group form-group_password mt3_col-12 mt3_row-gut-1 alice_required">
+                                <label for="password"></label>
+                                <input class="mt3_fullwidth alice_input-form" id="password_singup" type="password" name="password" placeholder="Password" value="" required>
+                                <span class="help-block mt3_color--danger"></span>
+                                <div class="pswd_info">
+                                    <ul class="pswd_info-items">
+                                        <li class="pswd_info-item pswd_info-length invalid">At least 8 characters
+                                            <i class="pswd_info-icon pswd_info-icon-length icongs icongs-close"></i>
+                                        </li>
+                                        <li class="pswd_info-item pswd_info-check invalid">Includes at least 3 of the following: uppercase letter, lowercase letter, number or special character
+                                            <i class="pswd_info-icon pswd_info-icon-check icongs icongs-close"></i>
+                                        </li>
+                                        <li class="pswd_info-item pswd_info-strength mt3_subh3 op_font-bold mt3_background-red-light invalid">
+                                            <strong>Does not meet requirements</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group form-group_confirm-password mt3_col-12 mt3_row-gut-1 alice_required">
+                                <label for="confirmPassword"></label>
+                                <input class="mt3_fullwidth alice_input-form" id="confirm_password" type="password" name="confirmPassword" placeholder="Confirm Password" value="" required>
+                                <span class="help-block mt3_color--danger"></span>
+                            </div>
+                            <div class="form-group form-group_locationName mt3_col-12 alice_required">
+                                <div class="alice_select mt3_col-md-4 mt3_row-gut-1 ui-widget">
+                                    <label for="locationReference"></label>
+                                    <input class="typeahead mt3_fullwidth alice_input-form tt-input ui-autocomplete-input" type="text" name="locationReference" id="locationReference" placeholder="City" value="" autocomplete="on" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent;" required>
+                                    <span class="help-block mt3_color--danger"></span>
+                                </div>
+                                <div class="mt3_select mt3_col-md-3 alice_col-margin-5 mt3_row-gut-1">
+                                    <label for="state"></label>
+                                    <input class="mt3_fullwidth alice_input-form location_input" type="text" name="state" id="state_singup" placeholder="State" value="" disabled="" required>
+                                </div>
+                                <div class="alice_select mt3_col-md-4 mt3_row-gut-1">
+                                    <label for="country"></label>
+                                    <input class="mt3_fullwidth alice_input-form location_input" type="text" name="country" id="country_singup" placeholder="Country" value="" disabled="" required>
+                                </div>
+                            </div>
+                            <div class="form-group mt3_col-12 mt3_row-gut-1">
+                                <div class="alice_tooltip-wrapper">
+                                    <label class="form-label-birthdate">Birthday</label>
+                                </div>
+                            </div>
+                            <div class="form-group form-group_birthdate">
+                                <div class="mt3_row">
+                                    <div class="alice_select mt3_col-md-4 mt3_row-gut-1">
+                                        <select id="birthdate-month" name="birthDate" class="alice_input-form mt3_fullwidth alice_input-form alice_fullwidth--select alice_paddinghalf" data-type="month" required placeholder="Birth Month">
+                                            <option value="" disabled="" selected="" >Month</option>
+                                            <option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option><option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
+                                        <i class="icongs icongs-directiondown alice_select-arrow"></i>
+                                    </div>
+                                    <div class="mt3_select mt3_col-md-3 alice_col-margin-5 mt3_row-gut-1">
+                                        <select id="birthdate-day" class="alice_input-form mt3_fullwidth alice_input-form mt3_fullwidth--select alice_paddinghalf" data-type="date" required placeholder="Birth Day">
+                                            <option value="" disabled="" selected="" >Day</option>
+                                            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option></select>
+                                        <i class="icongs icongs-directiondown alice_select-arrow"></i>
+                                    </div>
+                                    <div class="alice_select mt3_col-md-4 mt3_row-gut-1">
+                                        <select id="birthdate-year" class="alice_input-form mt3_fullwidth alice_input-form alice_fullwidth--select alice_paddinghalf" data-type="year" required placeholder="Birth Year">
+                                            <option value="" disabled="" selected="" >Year</option>
+                                            <option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option><option value="1969">1969</option><option value="1968">1968</option><option value="1967">1967</option><option value="1966">1966</option><option value="1965">1965</option><option value="1964">1964</option><option value="1963">1963</option><option value="1962">1962</option><option value="1961">1961</option><option value="1960">1960</option><option value="1959">1959</option><option value="1958">1958</option><option value="1957">1957</option><option value="1956">1956</option><option value="1955">1955</option><option value="1954">1954</option><option value="1953">1953</option><option value="1952">1952</option><option value="1951">1951</option><option value="1950">1950</option><option value="1949">1949</option><option value="1948">1948</option><option value="1947">1947</option><option value="1946">1946</option><option value="1945">1945</option><option value="1944">1944</option><option value="1943">1943</option><option value="1942">1942</option><option value="1941">1941</option><option value="1940">1940</option><option value="1939">1939</option><option value="1938">1938</option><option value="1937">1937</option><option value="1936">1936</option><option value="1935">1935</option><option value="1934">1934</option><option value="1933">1933</option><option value="1932">1932</option><option value="1931">1931</option><option value="1930">1930</option><option value="1929">1929</option><option value="1928">1928</option><option value="1927">1927</option><option value="1926">1926</option><option value="1925">1925</option><option value="1924">1924</option><option value="1923">1923</option><option value="1922">1922</option><option value="1921">1921</option><option value="1920">1920</option><option value="1919">1919</option><option value="1918">1918</option><option value="1917">1917</option></select>
+                                        <i class="icongs icongs-directiondown alice_select-arrow"></i>
+                                    </div>
+                                </div>
+                                <span class="help-block mt3_color--danger"></span>
+                            </div>
+                            <div class="mt3_row-gut-4">
+                                <div class="mt3_col-12 mt3_col-md-gut-1">
+                                    <div class="form-group form-group_educator">
+                                        <div class="checkbox col-md-12 text-center">
+                                            <input id="educator-check" class="mt3_checkbox" type="checkbox" name="educator-check">
+                                            <label for="educator-check">Are you an educator?</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Educator section -->
+
+                    <div class="accordion-educator mt3_row-gut-1 mt3_col-md-gut-1">
+                        <div class="mt3_row-gut-1 mt3_col-md-12">
+                            <div class="edu-separator edu-line"></div>
+                            <div class="edu-separator edu-arrow-left"></div>
+                            <div class="edu-separator edu-arrow-right"></div>
+                            <div class="edu-separator edu-line"></div>
+                        </div>
+                        <div class="mt3_col-gut-1 mt3_col-lg-offset-3 mt3_col-lg-6">
+                            <div class="accordion-educator-section alice_col-gut-half mt3_col-md-gut-1">
+                                <div class="accordion-section mt3_row-gut-1">
+                                    <div class="accordion-section_workplace">
+                                        <input type="text" name="workplace" id="workplace" class="mt3_fullwidth alice_input-form" placeholder="Workplace/School Name">
+                                    </div>
+                                </div>
+                                <div class="mt3_row mt3_row-gut-1 mt3_col-md-gut-1 accordion-section-content form-group_typeeducator">
+                                    <div class="form-group mt3_row-gut-half accordion-section-title">
+                                        <label class="section-label">Type of Educator</label>
+                                        <span class="help-block mt3_h5 mt3_color--danger"></span>
+                                    </div>
+                                    <div class="accordion-section_type">
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-1" name="checkbox-type-1" class="mt3_checkbox checkbox-type" type="checkbox" value="1">
+                                            <label for="checkbox-type-1">Formal Educator</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-2" name="checkbox-type-2" class="mt3_checkbox checkbox-type" type="checkbox" value="2">
+                                            <label for="checkbox-type-2">Museum Educator</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-3" name="checkbox-type-3" class="mt3_checkbox checkbox-type" type="checkbox" value="3">
+                                            <label for="checkbox-type-3">Afterschool Provider</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-4" name="checkbox-type-4" class="mt3_checkbox checkbox-type" type="checkbox" value="5">
+                                            <label for="checkbox-type-4">Librarian</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-5" name="checkbox-type-5" class="mt3_checkbox checkbox-type" type="checkbox" value="6">
+                                            <label for="checkbox-type-5">Pre-service</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-6" name="checkbox-type-6" class="mt3_checkbox checkbox-type" type="checkbox" value="7">
+                                            <label for="checkbox-type-6">Homeschool Provider</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-7" name="checkbox-type-7" class="mt3_checkbox checkbox-type" type="checkbox" value="8">
+                                            <label for="checkbox-type-7">Career Tech Educator</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-8" name="checkbox-type-8" class="mt3_checkbox checkbox-type" type="checkbox" value="9">
+                                            <label for="checkbox-type-8">Administrator</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-9" name="checkbox-type-9" class="mt3_checkbox checkbox-type" type="checkbox" value="10">
+                                            <label for="checkbox-type-9">Professional Development <br><span class="edu-break">Service Provider</span></label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-10" name="checkbox-type-10" class="mt3_checkbox checkbox-type" type="checkbox" value="11">
+                                            <label for="checkbox-type-10">Parent</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-type-0" name="checkbox-type-0" class="mt3_checkbox checkbox-type" type="checkbox" value="0">
+                                            <label for="checkbox-type-0">Other</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt3_row mt3_row-gut-1 accordion-section-content form-group_subjects">
+                                    <div class="form-group mt3_row-gut-half accordion-section-title">
+                                        <label class="section-label">Subjects</label>
+                                        <span class="help-block mt3_h5 mt3_color--danger"></span>
+                                    </div>
+                                    <div class="accordion-section_subjects">
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-1" name="checkbox-subjects-1" class="mt3_checkbox checkbox-subjects" type="checkbox" value="1">
+                                            <label for="checkbox-subjects-1">Elementary Ed <br><span class="edu-break">All Subjects</span></label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-2" name="checkbox-subjects-2" class="mt3_checkbox checkbox-subjects" type="checkbox" value="2">
+                                            <label for="checkbox-subjects-2">English Language <br><span class="edu-break">Arts</span></label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-11" name="checkbox-subjects-11" class="mt3_checkbox checkbox-subjects" type="checkbox" value="11">
+                                            <label for="checkbox-subjects-11">Tech / Computer <br><span class="edu-break">Science / Programming</span></label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-4" name="checkbox-subjects-4" class="mt3_checkbox checkbox-subjects" type="checkbox" value="4">
+                                            <label for="checkbox-subjects-4">Geography</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-5" name="checkbox-subjects-5" class="mt3_checkbox checkbox-subjects" type="checkbox" value="5">
+                                            <label for="checkbox-subjects-5">History</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-6" name="checkbox-subjects-6" class="mt3_checkbox checkbox-subjects" type="checkbox" value="6">
+                                            <label for="checkbox-subjects-6">Science</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-7" name="checkbox-subjects-7" class="mt3_checkbox checkbox-subjects" type="checkbox" value="7">
+                                            <label for="checkbox-subjects-7">Environmental Science</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-8" name="checkbox-subjects-8" class="mt3_checkbox checkbox-subjects" type="checkbox" value="8">
+                                            <label for="checkbox-subjects-8">Math</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-9" name="checkbox-subjects-9" class="mt3_checkbox checkbox-subjects" type="checkbox" value="9">
+                                            <label for="checkbox-subjects-9">Foreign Language</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-10" name="checkbox-subjects-10" class="mt3_checkbox checkbox-subjects" type="checkbox" value="10">
+                                            <label for="checkbox-subjects-10">Fine Arts</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-3" name="checkbox-subjects-3" class="mt3_checkbox checkbox-subjects" type="checkbox" value="3">
+                                            <label for="checkbox-subjects-3">Social Studies</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-12" name="checkbox-subjects-12" class="mt3_checkbox checkbox-subjects" type="checkbox" value="12">
+                                            <label for="checkbox-subjects-12">Health / PE / Religion</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-13" name="checkbox-subjects-13" class="mt3_checkbox checkbox-subjects" type="checkbox" value="13">
+                                            <label for="checkbox-subjects-13">Special Education</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-14" name="checkbox-subjects-14" class="mt3_checkbox checkbox-subjects" type="checkbox" value="14">
+                                            <label for="checkbox-subjects-14">Gifted / Talented</label>
+                                        </div>
+                                        <div class="mt3_col-sm-6 mt3_col-md-4 mt3_row-gut-half">
+                                            <input id="checkbox-subjects-0" name="checkbox-subjects-0" class="mt3_checkbox checkbox-subjects" type="checkbox" value="0">
+                                            <label for="checkbox-subjects-0">Other</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt3_row mt3_row-gut-1 accordion-section-content form-group_grades">
+                                    <div class="form-group mt3_row-gut-half accordion-section-title">
+                                        <label class="section-label">Grades</label>
+                                        <span class="help-block mt3_h5 mt3_color--danger"></span>
+                                    </div>
+                                    <div class="accordion-section_grades">
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-1" name="checkbox-grades-1" class="mt3_checkbox checkbox-grades" type="checkbox" value="1">
+                                            <label for="checkbox-grades-1">1</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-6" name="checkbox-grades-6" class="mt3_checkbox checkbox-grades" type="checkbox" value="6">
+                                            <label for="checkbox-grades-6">6</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-11" name="checkbox-grades-11" class="mt3_checkbox checkbox-grades" type="checkbox" value="11">
+                                            <label for="checkbox-grades-11">11</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-2" name="checkbox-grades-2" class="mt3_checkbox checkbox-grades" type="checkbox" value="2">
+                                            <label for="checkbox-grades-2">2</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-7" name="checkbox-grades-7" class="mt3_checkbox checkbox-grades" type="checkbox" value="7">
+                                            <label for="checkbox-grades-7">7</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-12" name="checkbox-grades-12" class="mt3_checkbox checkbox-grades" type="checkbox" value="12">
+                                            <label for="checkbox-grades-12">12</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-3" name="checkbox-grades-3" class="mt3_checkbox checkbox-grades" type="checkbox" value="3">
+                                            <label for="checkbox-grades-3">3</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-8" name="checkbox-grades-8" class="mt3_checkbox checkbox-grades" type="checkbox" value="8">
+                                            <label for="checkbox-grades-8">8</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-13" name="checkbox-grades-13" class="mt3_checkbox checkbox-grades" type="checkbox" value="13">
+                                            <label for="checkbox-grades-13">13+</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-4" name="checkbox-grades-4" class="mt3_checkbox checkbox-grades" type="checkbox" value="4">
+                                            <label for="checkbox-grades-4">4</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-9" name="checkbox-grades-9" class="mt3_checkbox checkbox-grades" type="checkbox" value="9">
+                                            <label for="checkbox-grades-9">9</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-0" name="checkbox-grades-0" class="mt3_checkbox checkbox-grades" type="checkbox" value="0">
+                                            <label for="checkbox-grades-0">Other</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-5" name="checkbox-grades-5" class="mt3_checkbox checkbox-grades" type="checkbox" value="5">
+                                            <label for="checkbox-grades-5">5</label>
+                                        </div>
+                                        <div class="mt3_col-4 mt3_row-gut-half">
+                                            <input id="checkbox-grades-10" name="checkbox-grades-10" class="mt3_checkbox checkbox-grades" type="checkbox" value="10">
+                                            <label for="checkbox-grades-10">10</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <section class="mt3_col-gut-1 mt3_col-lg-offset-3 mt3_col-lg-6 casl_agreement casl_hidden" style="display: none;">
+                        <h3>Canadian Anti-Spam Compliance</h3>
+                        <p>Based on Canada’s Anti-Spam law, we are not allowed to send you messages without your express consent. To continue enjoying the benefits of our communications, please select the check box below.</p>
+                        <div id="user_agrees_to">
+                            <div class="casl_consent">
+                                CONSENT: I would like to get emails with updates about National Geographic's mission, relevant content about our products and services and reminders about events in my area.<br>
+                                <small>You can withdraw your consent at any time by clicking on the “unsubscribe” link in any email. See our Privacy Policy for more details about changing your marketing preferences for the National Geographic society and its affiliates.</small>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="mt3_row mt3_col-md-offset-2 mt3_col-md-8">
+                        <div class="mt3_row-gut-1 mt3_col-md-gut-half mt3_col-12">
+                            <div class="mt3_col-gut">
+                                <div class="alice_paddinghalf fields-message text-center mt3_hidden"></div>
+                            </div>
+                        </div>
+                        <div class="form-group mt3_col-md-4 mt3_col-md-offset-4 mt3_row-gut-1">
+                            <button id="btn-signup" class="mt3_btn mt3_btn--alternate op_btn mt3_col-sm-12 btn_submit">Join Now</button>
+                        </div>
+                        <div class="mt3_row mt3_row-lg-gut-3 mt3_row-gut-1 mt3_col-12 text-center">
+                            <a class="mt3_textlink" id="cancel" onclick="openTab(event, 'login-box')">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="forgot-box" class="tabcontent">
+                <div class="mt3_col-md-offset-1 mt3_col-md-10">
+                    <div class="logo mt3_row mt3_row-gut-1"></div>
+                    <h1 class="title-text mt3_row mt3_col-gut">Forgot Your Password?</h1>
+                    <h3 class="mt3_col-gut-half mt3_row-gut-2 subtitle-text alice_col-padding-20">Please provide your email address and we will send you a link so that <br>you can reset your password.</h3>
+                    <div id="main" class="mt3_col-gut-1 mt3_col-lg-offset-3 mt3_col-lg-6">
+                        <div class="form-group form-group_error hide">
+                            <div class="help-block with-errors mt3_row mt3_row-gut-1 alice_paddinghalf alert-message text-center"></div>
+                        </div>
+                        <form id="formForgot" class="form-margin-90" method="post" role="form" autocomplete="off">
+                            <div class="form-group form-group_email mt3_row-gut-1">
+                                <input id="resetPasswordEmail" type="email" name="email" class="alice_input-form mt3_fullwidth input-email" placeholder="Email Address" autofocus="">
+                                <span class="help-block mt3_h5 mt3_color--danger"></span>
+                            </div>
+                            <div class="form-group mt3_row-gut-2">
+                                <button id="btn-recover" class="button-login mt3_btn mt3_btn--default mt3_fullwidth btn-submit">Recover my password</button>
+                            </div>
+                        </form>
+                        <div class="mt3_row mt3_row-gut-2 mt3_row-lg-gut-3 alc_textlinks text-center">
+                            Don't have an account? <a onclick="openTab(event, 'login-box')">Join Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="verify-box" class="tabcontent">
+                <div class="mt3_col-md-offset-1 mt3_col-md-10">
+                    <div class="logo mt3_row mt3_row-gut-1"></div>
+                    <h1 class="title-text mt3_row mt3_col-gut">You're done!</h1>
+                    <div class="mt3_row mt3_row-gut-2 mt3_row-lg-gut-3 alc_textlinks text-center">
+                        Please verify your email and <a onclick="openTab(event, 'login-box')">login</a>.
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--[if IE 8]>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/ie8/0.2.5/ie8.js"></script>
+      <![endif]-->
+
+        <!--[if lte IE 9]>
+      <script src="https://cdn.auth0.com/js/polyfills/1.0/base64.min.js"></script>
+      <script src="https://cdn.auth0.com/js/polyfills/1.0/es5-shim.min.js"></script>
+      <![endif]-->
+
+        <script src="https://cdn.auth0.com/js/auth0/8.7/auth0.min.js"></script>
+        <script src="https://cdn.auth0.com/js/polyfills/1.0/object-assign.min.js"></script>
+        <script>
+                            var login_hint_orig = ''
+                            window.addEventListener('load', function () {
+
+                                var config = JSON.parse(
+                                        decodeURIComponent(escape(window.atob('@@config@@')))
+                                        );
+                                console.log(config);
+                                if (typeof (config.extraParams.login_hint) === 'undefined' || config.extraParams.login_hint === null || config.extraParams.login_hint === '') {
+                                    document.getElementById('password').style.display = "none";
+                                    document.getElementById("password").required = false;
+                                    document.getElementById("btn-login").innerHTML = "Next"
+                                } else {
+                                    document.getElementById('password').style.display = "block";
+                                    document.getElementById("password").required = true;
+                                    document.getElementById("email").value = config.extraParams.login_hint;
+                                    document.getElementById("btn-login").innerHTML = "Sign In"
+                                }
+                                var local_params = Object.assign({
+                                    domain: config.auth0Domain,
+                                    clientID: config.clientID,
+                                    redirect_uri: config.callbackURL,
+                                    responseType: config.extraParams.response_type,
+                                    tenant: config.auth0Tenant
+                                }, config.internalOptions);
+
+
+
+                                var webAuth = new auth0.WebAuth(local_params);
+                                console.log(webAuth);
+
+                                var databaseConnection = config.connection ? config.connection : 'Username-Password-Authentication';
+
+
+                                function login(e) {
+                                    e.preventDefault();
+
+                                    // Check that all required elements are completed.
+                                    if (!checkRequiredElements('formView')) {
+                                        return false;
+                                    }
+                                    var username = document.getElementById('email').value;
+                                    var password = document.getElementById('password').value;
+
+                                    var tenant_select_proxy_url = "https://natgeo-preprod-dev.apigee.net/tenantselector/";
+                                    var post_payload = {
+                                        "username": username.toLowerCase(),
+                                        "tenantId": "US"
+                                    };
+                                    // Request to know in wich tenant the user is stored.
+                                    $.ajax({
+                                        type: "POST",
+                                        url: tenant_select_proxy_url,
+                                        data: JSON.stringify(post_payload),
+                                        contentType: "application/json",
+                                        dataType: "json",
+                                        // Callback function
+                                        success: function (response, status, xhr) {
+                                            var config = JSON.parse(
+                                                    decodeURIComponent(escape(window.atob('@@config@@')))
+                                                    );
+                                            //alert(config.extraParams.login_hint);
+                                            //check redirect value in APIGEE  response
+                                            // {"status":200,"content":{"tenantId":"EU","tenantDomain":"natgeo-test.eu.auth0.com","redirect":true}}
+                                            if (xhr.status == 200 && response.content.redirect) {
+
+                                                if (config.extraParams.response_type.indexOf('code') > -1)
+                                                    window.location.replace(config.callbackURL.replace("/callback", "/clogin") + '?login_hint=' + username + '&tenant=EU');
+                                                else
+                                                    window.location.replace(config.callbackURL + '/login-eu.html?login_hint=' + username + '&tenant=EU');
+
+                                                /* US_webAuth.authorize({
+                                                 connection: databaseConnection,
+                                                 realm: 'Username-Password-Authentication',
+                                                 login_hint: username
+                                                 }, function(err) {
+                                                 if (err) {
+                                                 alert(err.error + ': ' + err.error_description);
+                                                 }
+                                                 }); */
+
+                                            } else {
+                                                // If user is not in other tenant, login here. If not exist, the login will throw proper error.
+                                                if (password == null || password === '') {
+                                                    document.getElementById('password').style.display = "block";
+                                                    document.getElementById("password").required = true;
+                                                    document.getElementById("btn-login").innerHTML = "Sign In"
+                                                    return;
+                                                }
+                                                webAuth.redirect.loginWithCredentials({
+                                                    connection: databaseConnection,
+                                                    tenant: 'puahp-geo',
+                                                    //realm: 'Username-Password-Authentication',
+                                                    username: username,
+                                                    password: password
+                                                }, function (err) {
+                                                    if (err)
+                                                        displayError(err);
+                                                });
+                                            }
+                                        },
+                                        failure: function (err) {
+                                            console.log("APIGEE Error.");
+                                            displayError(err);
+                                        }
+                                    });
+                                }
+
+
+                                function signup() {
+
+                                    // Check that all required elements are completed.
+                                    if (!checkRequiredElements('defaultForm')) {
+                                        return false;
+                                    }
+
+                                    var password = document.getElementById('password_singup').value;
+                                    var confirm_password = document.getElementById('confirm_password').value;
+                                    // Check that password and confirm_password are the same.
+                                    if (password != confirm_password) {
+                                        alert('Passwords do not match');
+                                        return false;
+                                    }
+
+                                    var email = document.getElementById('email_singup').value;
+                                    var first_name = document.getElementById('firstName_singup').value;
+                                    var last_name = document.getElementById('lastName_singup').value;
+                                    var birth_year = document.getElementById('birthdate-year').value;
+                                    var birth_month = document.getElementById('birthdate-month').value;
+                                    var birth_day = document.getElementById('birthdate-day').value;
+                                    var city = document.getElementById('locationReference').value;
+                                    var state = document.getElementById('state_singup').value;
+                                    var country = document.getElementById('country_singup').value;
+
+                                    webAuth.signup({
+                                        connection: databaseConnection,
+                                        email: email,
+                                        password: password,
+                                        user_metadata: {
+                                            given_name: first_name,
+                                            last_name: last_name,
+                                            birth_year: birth_year,
+                                            birth_month: birth_month,
+                                            birth_day: birth_day,
+                                            city: city,
+                                            state: state,
+                                            country: country
+                                        }
+                                    }, function (err) {
+                                        if (err)
+                                            displayError(err);
+                                        else
+                                            openTab(window.event, 'verify-box');
+                                    });
+
+                                }
+
+                                function loginWithGoogle() {
+                                    webAuth.authorize({
+                                        connection: 'google-oauth2'
+                                    }, function (err) {
+                                        if (err)
+                                            displayError(err);
+                                    });
+                                }
+
+                                function loginWithFacebook() {
+                                    webAuth.authorize({
+                                        connection: 'facebook'
+                                    }, function (err) {
+                                        if (err)
+                                            displayError(err);
+                                    });
+                                }
+
+                                function displayError(err) {
+                                    alert(err.name + ': ' + err.statusCode + ' \n' +
+                                            err.description);
+                                }
+
+                                /**
+                                 * Shows an error message to the user.
+                                 * @param {String} errorString error message.
+                                 */
+                                function displayStringError(errorString) {
+                                    var errorMessage = document.getElementById('error-message');
+                                    errorMessage.innerHTML = errorString;
+                                    errorMessage.style.display = 'block';
+                                }
+
+                                /**
+                                 * Checks if all required elements of form formId have a not empty value.
+                                 * @param {String} formId id of the HTML form to check.
+                                 * @return {bool} true if there are no required elements with empty
+                                 *                value, false otherwise.
+                                 */
+                                function checkRequiredElements(formId) {
+                                    var form = document.getElementById(formId);
+                                    for (var i = 0; i < form.elements.length; i++) {
+                                        if (form.elements[i].value === '' && form.elements[i].hasAttribute('required')) {
+                                            alert(form.elements[i].attributes.placeholder.nodeValue + ' is missing.');
+                                            return false;
+                                        }
+                                    }
+                                    return true;
+                                }
+
+                                document.getElementById('btn-login').addEventListener('click', login);
+                                document.getElementById('btn-google').addEventListener('click', loginWithGoogle);
+                                document.getElementById('btn-facebook').addEventListener('click', loginWithFacebook);
+                                document.getElementById('btn-signup').addEventListener('click', signup);
+
+                            });
+
+                            function openTab(evt, tab2open) {
+                                var i, tabcontent, tablinks;
+                                tabcontent = document.getElementsByClassName("tabcontent");
+                                for (i = 0; i < tabcontent.length; i++) {
+                                    tabcontent[i].style.display = "none";
+                                }
+                                document.getElementById(tab2open).style.display = "block";
+                                evt.currentTarget.className += " active";
+                            }
+        </script>
+        <footer id="footer">
+            <div class="mt3_col-md-8 mt3_col-md-offset-2 text-center terms">
+                <p>By signing up, you agree to our <a data-bypass="true" href="http://www.nationalgeographic.com/community/terms/" target="_blank">Terms of Service</a>, <a data-bypass="true" href="http://www.nationalgeographic.com/community/privacy/" target="_blank">Privacy Policy</a>, and <a data-bypass="true" href="http://www.nationalgeographic.com/community/community-rules/" target="_blank">Community Rules</a></p>
+            </div>
+        </footer>
+    </body>
+
+</html>
+
+
