@@ -1,3 +1,4 @@
 vendor/
 .env
 nbproject
+node_modules
