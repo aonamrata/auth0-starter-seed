@@ -100,7 +100,7 @@
                     <button
                         type="submit"
                         id="btn-signup-email"
-                        class="btn btn-primary btn-block"> > </button>
+                        class="btn btn-primary btn-block"> Next </button>
                 </form>
             </div>
         </div>
@@ -123,7 +123,7 @@
                         <li>special characters (e.g. !@#$%^&*) </li>
                         <li>No more than 2 identical characters in a row (e.g., "aaa" not allowed)"</li>
                     </ul>
-                </div>>
+                </div>
 
                 <div id="error-message" class="alert alert-danger"></div>
                 <form onsubmit="return false;" method="post">
@@ -134,17 +134,11 @@
                             class="form-control"
                             id="signup-password"
                             placeholder="Your password" />
-                        <label for="signup-password">*Confirm password:</label>
-                        <input
-                            type="password"
-                            class="form-control"
-                            id="signup-confirm-password"
-                            placeholder="Confirm password">
                     </div>
                     <button
                         type="submit"
                         id="btn-signup-password"
-                        class="btn btn-primary btn-block"> > </button>
+                        class="btn btn-primary btn-block"> Next </button>
                 </form>
             </div>
         </div>
@@ -216,6 +210,7 @@
                             // for decision making later for intermediate stages.
                             var new_user = 0;
                             var vend_contact_id = 0;
+                            var orchard_lookup_response = {result: []};
 
 
                             // Startup show login form
@@ -242,9 +237,11 @@
                                         hideError();
                                         var parts = err.description.split("|");
                                         $('#signup-email').val(parts[0]);
-                                        if (parts.lenght > 1) {
-                                            vend_contact_id = params[1];
+                                        $('#signup-email').change();
+                                        if (parts.length  > 1) {
+                                            vend_contact_id = parts[1];
                                         }
+                                        console.log('VC id='+vend_contact_id);
                                         askForEmail();
                                     } else {
                                         displayError(err);
@@ -270,37 +267,41 @@
                              */
                             function lookupEmail() {
                                 var email = $('#signup-email').val();
-                                var url = 'http://localhost:3003/head_response.json';
-                                $.ajax({
-                                    type: "GET",
-                                    url: url,
-                                    dataType: "json",
-                                    success: function (response, status, xhr) {
-                                        if (parseInt(response.auth0_user_count) > 0 || parseInt(response.orchard_user_count) > 0) {
+                                url1 = 'https://xn4nyishu3.execute-api.us-east-1.amazonaws.com/api/auth0/email/'+email;
+                                url2 = 'https://xn4nyishu3.execute-api.us-east-1.amazonaws.com/api/orchard/email/'+email;
+                                $.when( $.ajax( url1 ), $.ajax( url2 ) ).done(function( auth0_lookup, orchard_lookup ) {
+                                    // a1 and a2 are arguments resolved for the page1 and page2 ajax requests, respectively.
+                                    // Each argument is an array with the following structure: [ data, statusText, jqXHR ]
+                                    if (
+                                            auth0_lookup[2].status !== 200 || orchard_lookup[2].status !== 200 ||
+                                            auth0_lookup[0] == '' || orchard_lookup[0] == ''
+                                        ) {
+                                        console.error(auth0_lookup);
+                                        console.error(orchard_lookup);
+                                        return  displayError({'message': 'Something went wrong with checking this email. Try again.'});
+                                    }
+
+                                    orchard_lookup_response = orchard_lookup[0];
+                                    if (auth0_lookup[0].result.length > 0 || orchard_lookup[0].result.length > 1) {
                                             // auth0 account exist with this email OR dupe orchard email but neither signed up.
-                                            new_user = (parseInt(response.auth0_user_count) > 0 ? 0 : 1);
+                                            new_user = (orchard_lookup[0].result.length > 1 ? 0 : 1);
                                             hideError();
                                             $('#tab-login').hide();
-                                            $('#tab-signup-password').hide()();
+                                            $('#tab-signup-password').hide();
                                             $('#tab-confirm-merge').show();
                                             $('#tab-signup-email').hide();
                                             $('#tab-check-email').hide();
-                                        } else {
-                                            // new user with no dupe email, so ask for password.
-                                            hideError();
-                                            new_user = 1;
-                                            $('#tab-login').hide();
-                                            $('#tab-signup-password').show();
-                                            $('#tab-confirm-merge').hide();
-                                            $('#tab-signup-email').hide();
-                                            $('#tab-check-email').hide();
-                                        }
-                                    },
-                                    failure: function (err) {
-                                        console.error(err);
-                                        displayError(err);
+                                    } else {
+                                        // new user with no dupe email, so ask for password.
+                                        hideError();
+                                        new_user = 1;
+                                        $('#tab-login').hide();
+                                        $('#tab-signup-password').show();
+                                        $('#tab-confirm-merge').hide();
+                                        $('#tab-signup-email').hide();
+                                        $('#tab-check-email').hide();
                                     }
-                                });
+                              });
                             }
 
                             /**
@@ -313,6 +314,12 @@
                                 $('#tab-confirm-merge').hide();
                                 $('#tab-signup-email').hide();
                                 $('#tab-check-email').hide();
+                            }
+
+
+                            function isEmail(email) {
+                              var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                              return regex.test(email);
                             }
 
                             /**
@@ -331,26 +338,19 @@
                                     user_metadata: {
                                         username: username,
                                         vend_contact_id: vend_contact_id.toString(),
-                                        type: 'alw'}
+                                        type: 'alw',
+                                        update_other_users: orchard_lookup_response.result.length.toString()
+                                    }
                                 };
 
                                 console.log(params);
                                 // Way 1:
-//                                webAuth.signup(params, function (err) {
-//                                    if (err) {
-//                                        return displayError(err);
-//                                    }
-//                                    return checkYourEmail();
-//
-//                                });
-                                // Way 2:
-                                var db_username = username + "|" + email;
-                                webAuth.login({
-                                    realm: loginConnection,
-                                    username: db_username,
-                                    password: password,
-                                }, function (err) {
-                                    displayError(err);
+                                webAuth.signup(params, function (err, result) {
+                                    if (err) {
+                                        return displayError(err);
+                                    }
+                                    checkYourEmail();
+
                                 });
                             }
 
@@ -361,35 +361,6 @@
                                 $('#tab-signup-email').hide();
                                 $('#tab-check-email').show();
                             }
-
-                            /**
-                             *
-                             * @returns {undefined}
-                             */
-                            function updateOrchardLogin() {
-                                var username = $('#username').val();
-                                var email = $('#signup-email').val();
-                                var url = 'http://localhost:3003/head_response.json';
-                                $.ajax({
-                                    type: "PATCH",
-                                    url: url,
-                                    data: {'username': username, 'auth0_email': email},
-                                    contentType: "application/json",
-                                    dataType: "json",
-                                    success: function (response, status, xhr) {
-                                        $('#username').val(email);
-                                        $('#tab-login').show();
-                                        $('#tab-signup-password').hide();
-                                        $('#tab-confirm-merge').hide();
-                                        $('#tab-signup-email').hide();
-                                    },
-                                    failure: function (err) {
-                                        console.error(err);
-                                        displayError(err);
-                                    }
-                                });
-                            }
-
 
                             function hideError() {
                                 $('.alert-danger').html('').hide();
@@ -424,14 +395,15 @@
                                 signup();
                             });
                             $('#btn-merge-yes').on('click', function () {
-                                if (new_user > 0) {
-                                    // new user who agreed to merge his orchard email accounts.
-                                    askForPassword();
-                                } else {
-                                    // user switching to already auth0 email
-                                    updateOrchardLogin();
-                                }
+                                askForPassword();
+                            });
 
+                            $('#signup-email').on('change keyup', function (){
+                                if (isEmail($('#signup-email').val())) {
+                                    $('#btn-signup-email').removeClass('disabled');
+                                } else {
+                                    $('#btn-signup-email').addClass('disabled');
+                                }
                             });
                         });
         </script>
