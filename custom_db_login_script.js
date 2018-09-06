@@ -1,62 +1,81 @@
 //var sha3_512 = require('js-sha3').sha3_512;
+//var raven = require('raven');
+var TO_MIGRATE = ["juanp01"];
 
 function login(username, password, callback) {
+    var raven = require('raven');
+    raven.config(configuration.sentry_dns).install();
+
     var arrayOfStrings = username.split('|');
     var orchard_username = arrayOfStrings[0];
-    var raven = require('raven');
-    raven.config('https://426d67d71e644358a3442aa456e63b80@sentry.io/53873').install();
     raven.setContext({user: {username: username}});
 
-    var connection = mysql({
-        host: 'db4free.net',
-        user: 'npatel',
-        password: 'KmU2NNy53wSJ^&?Zws',
-        database: 'art_relations'
-    });
+    if (arrayOfStrings.length === 3 && arrayOfStrings[1] === 'auth0') {
+        var user_obj = {
+            auth0_id: arrayOfStrings[1] + '|' + arrayOfStrings[2],
+            user_id: 'alw:' + orchard_username, // this is vcid
+            email: password
+        };
+        raven.captureMessage(user_obj);
+        // This is single sign on scenario
+        return callback(null, user_obj);
+    }
 
 
-    connection.connect(function (err) {
-        if (err) {
-            raven.captureException(err);
-            return callback(err);
+
+
+    // ---- GENERATE HASH
+    const salt = "be5axu7u2ev5jeTuraprUsp4brap8us";
+    const key = 'alw';
+    const reHashCount = 97;
+    var outputHash = password;
+
+    for (var i = 0; i < reHashCount; i++) {
+        const hash1 = crypto.createHash("sha512");
+        hash1.update(outputHash + salt + key); // Hash the input
+        outputHash = hash1.digest("hex").toString('hex');     // Return it as a hex string
+    }
+
+    // ---------- GENERATE ENDS
+
+    var options = {
+        uri: configuration.ows_user + '/users/verify-login',
+        //uri: 'https://qa-ows-users-proxy.theorchard.io/users/verify-login',
+        method: 'POST',
+        json: {
+            "login": username,
+            "password": outputHash
         }
-    });
-    console.log('connected');
+    };
 
-    var query = "SELECT vc.id, vc.login, c.`contact_email`, vc.`passwords`, c.contact_first_name" +
-            " FROM vend_contact vc" +
-            " INNER JOIN contact c ON c.`contact_id` = vc.`contact_id`" +
-            " WHERE vc.`login` = ? AND vc.auth0_id IS NULL AND vc.active='Y' ";
-
-    connection.query(query, [orchard_username], function (err, results) {
+    request.post(options, function (err, response, body) {
+        if (response.statusCode === 404) {
+            raven.captureMessage(password + ' !== ' + outputHash);
+            return callback(new ValidationError('invalid-username', 'Invalid credentials or already migrated.'));
+        }
         if (err) {
             raven.captureException(err);
             return callback(new ValidationError('db-error', 'db error'));
         }
-        if (results.length === 0) {
-            return callback(new ValidationError('invalid-username', 'Invalid username provided or already migrated.'));
-        }
-        var user = results[0];
-        // ---- GENERATE HASH
-        const salt = "be5axu7u2ev5jeTuraprUsp4brap8us";
-        const key = 'alw';
-        const reHashCount = 97;
-        var outputHash = password;
-
-        for (var i = 0; i < reHashCount; i++) {
-            const hash1 = crypto.createHash("sha512");
-            hash1.update(outputHash + salt + key); // Hash the input
-            outputHash = hash1.digest("hex").toString('hex');     // Return it as a hex string
-        }
-        // ---------- GENERATE ENDS
-
-        var return_value = user.contact_email + "|" + user.id;
-        if (outputHash !== user.passwords) {
-            callback(new ValidationError('invalid-password', 'Invalid password provided'));
-//                callback(new WrongUsernameOrPasswordError(orchard_username, 'invalid password'));
+        if (response.statusCode === 200 && body.vend_contact_id !== undefined) {
+            // legacy login success
+            var return_value = '';
+            if (TO_MIGRATE.indexOf(username) < 0) {
+                // don't migrate them
+                return_value = outputHash + "|" + body.vend_contact_id;
+                return callback(new ValidationError('dont-migrated', return_value));
+            } else {
+                // send them to migrate flow
+                return_value = body.contact_email + "|" + body.vend_contact_id;
+                return callback(new ValidationError('not-migrated', return_value));
+            }
         } else {
-            return callback(new ValidationError('not-migrated', return_value));
+            // this should never happen.
+            raven.captureException(body);
+            return callback(new ValidationError('some-error', 'some error'));
+
         }
+
     });
 }
 

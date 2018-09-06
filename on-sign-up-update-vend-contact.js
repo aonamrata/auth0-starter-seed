@@ -1,7 +1,7 @@
 
 var mysql = require('mysql');
 var raven = require('raven');
-
+var request = require('request');
 /**
  @param {object} user - The user being created
  @param {string} user.id - user id
@@ -30,54 +30,27 @@ module.exports = function (user, context, cb) {
             user_metadata: user.user_metadata
         }
     });
-    raven.captureMessage('here!');
-    // Perform any asynchronous actions, e.g. send notification to Slack.
-    var connection = mysql.createConnection({
-        host: 'db4free.net',
-        user: 'npatel',
-        password: 'KmU2NNy53wSJ^&?Zws',
-        database: 'art_relations'
-    });
-
-    connection.connect(function (err) {
-        if (err) {
-            raven.captureException(err);
-            return cb(err);
-        }
-    });
-
     try {
-        var query = "UPDATE vend_contact" +
-                " SET auth0_id = ?, " +
-                " auth0_migrated_date = NOW() " +
-                " WHERE id = ?";
-
-        connection.query(query, [user.id, user.user_metadata.vend_contact_id], function (err) {
+        var options = {
+            uri: 'http://2402cd1a.ngrok.io/users/auth0-update',
+            method: 'POST',
+            json: {
+                "user_id": user.user_metadata.vend_contact_id,
+                "user_type": "alw",
+                "auth0_id": user.id
+            }
+        };
+        console.log(options);
+        request.post(options, function (err, response, body) {
             if (err) {
                 raven.captureException(err);
-                return cb(err);
+                console.log('error:', err); // Print the error if one occurred
+                return callback(new ValidationError('db-error', 'db error'));
             }
+
+            console.log('body:', body);
+            cb();
         });
-
-        // Migrate multiple users.
-        if (parseInt(user.user_metadata.update_other_users) > 1) {
-            query = "UPDATE vend_contact as vc" +
-                    " INNER JOIN contact c ON c.contact_id = vc.contact_id" +
-                    " SET vc.auth0_id = ?," +
-                    " vc.auth0_migrated_date = NOW()" +
-                    " WHERE c.contact_email = ?";
-
-            connection.query(query, [user.id, user.email], function (err) {
-                if (err) {
-                    raven.captureException(err);
-                    return cb(err);
-                }
-            });
-        }
-
-        connection.end();
-        cb();
-
     } catch (err) {
         // Handle the error here.
         raven.captureException(err);

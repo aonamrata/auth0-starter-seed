@@ -34,7 +34,6 @@
 <body>
 
   <div class="table">
-  
     <div class="cell">
       <div class="content">
         <!-- WIDGET -->
@@ -51,8 +50,8 @@
         container: "container",
 
         theme: {
-          icon: 'http://www.theorchard.com/wp-content/themes/skm-framework/assets/images/orchard-dark.svg',
-          primaryColor: "#ea5323"
+          icon: 'https://www.theorchard.tv/img/favicons/favicon32.ico',
+          primaryColor: "#f48b41"
         },
 
         requesterErrors: [
@@ -78,7 +77,7 @@
           tenantFriendlyName: "{{ userData.tenantFriendlyName }}"
           {% endif %}
         },
-        globalTrackingId: "dev-orchard-2fa",
+        globalTrackingId: "{{ globalTrackingId }}",
         {% if allowRememberBrowser %}allowRememberBrowser: {{ allowRememberBrowser }}, {% endif %}
         {% if stateCheckingMechanism %}stateCheckingMechanism: "{{ stateCheckingMechanism }}", {% endif %}
       });

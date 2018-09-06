@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Sign In Orchard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <style>
+            .full-page {
+                /*position: relative;*/
+                height: 100%;
+                background-color: #F2F2F2;
+            }
+            .main-box {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                box-shadow: 0 0 20px 2px #A4A4A4;
+            }
+            .row {
+                padding: 15px;
+            }
+            .header {
+                border-radius: 5px 5px 0 0;
+            }
+            .grey-header {
+                text-align: center;
+                background-color: #e3e3e3;
+            }
+            .blue-header {
+                background-color: #13395F;
+                color: white;
+                text-align: justify;
+
+            }
+            .white-body {
+                background-color:white;
+            }
+            .btn-link {
+                color: darkslategray;
+            }
+            .btn-link:focus, .btn-link:hover {
+                color: black;
+            }
+            .orange-footer {
+                background-color: #f48b41;
+            }
+            .btn-block {
+                border: 0 none;
+                color: white;
+            }
+            .btn-block:focus, .btn-block:hover, .btn-block:target, .btn-block:active {
+                border: 0 none;
+                background-color: #f48b41;
+            }
+            .alert {
+                margin-bottom: 0px;
+            }
+            .error-message {
+                display: none;
+            }
+            small {
+                color: grey;
+            }
+            .rules {
+                padding-left: 2em;
+                list-style-type: none;
+            }
+            li:before {
+                position: absolute;
+                margin-left: -1.3em;
+                font-weight: bold;
+            }
+            .tick:before {
+                content: "\2713";
+                color: grey;
+            }
+
+        </style>
+    </head>
+    <body class="full-page">
+        <div class="col-xs-12 col-sm-4 col-sm-offset-4 container-fluid main-box">
+
+            <!-- ------------- login form ----------------- -->
+            <div id="tab-login">
+                <div class="row header grey-header">
+                    <img src="https://www.theorchard.tv/img/favicons/favicon32.ico"/>
+                    <h3>The Orchard</h3>
+                </div>
+                <div class="error-message row alert alert-danger"></div>
+                <form onsubmit="return false;" method="post">
+                    <div class="row white-body">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="username" placeholder="Username">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="password" placeholder="Password">
+                        </div>
+                            <button type="button" id="btn-forgot" class="btn btn-link"><small>Don't remember your password?</small></button>
+                    </div>
+                    <div class="row orange-footer">
+                        <button type="submit" id="btn-login" class="btn btn-block orange-footer"> LOG IN </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ------------- Migrate Login Form ----------------- -->
+            <div id="tab-signup-email">
+                <div class="row header blue-header">
+                    <h4>Please update your login information</h4>
+                    <p>We're making The Orchard more secure. To help us keep your account protected, please update your username and password.</p>
+                </div>
+                <div class="error-message row alert alert-danger"></div>
+                <form onsubmit="return false;" method="post">
+                    <div class="row white-body">
+                        <div class="form-group">
+                            <strong>What email do you want to use to sign in?</strong>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="email" placeholder="Email address">
+                        </div>
+                        <div class="form-group">
+                            <small>Make sure to use email that you have access to. <br />
+                                We'll send a confirmation link shortly.</small>
+                        </div>
+                    </div>
+                    <div class="row orange-footer">
+                        <button type="submit" id="btn-signup-email" class="btn btn-block orange-footer"> NEXT </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ------------- Get password Form ----------------- -->
+            <div id="tab-get-password">
+                <div class="row header blue-header">
+                    <h4>Please update your login information</h4>
+                    <p>To help us keep your account protected, please update your username and password.</p>
+                </div>
+                <div class="error-message row alert alert-danger"></div>
+                <form onsubmit="return false;" method="post">
+                    <div class="row white-body">
+                        <div class="form-group">
+                            <strong>Choose a new password.</strong>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="signup-password" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <small>
+                                <ul class='rules'>
+                                    <li class="tick">At least 10 characters in length </li>
+                                    <li class="tick">Contains a upper case letter</li>
+                                    <li class="tick">Contains a numbers (i.e. 0-9)</li>
+                                    <li class="tick">Contains a special characters (e.g. !@#$%^&*) </li>
+                                </ul>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row orange-footer">
+                        <button type="submit" id="btn-get-password" class="btn btn-block orange-footer"> NEXT </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ------------- Verify email message ----------------- -->
+            <div id="tab-verify-email">
+                <div class="row header blue-header">
+                    <h4>Check your email to verify</h4>
+                    <p>Click the link in the email we sent you. That will officially update your credentials.</p>
+                </div>
+                <div class="error-message row alert alert-danger"></div>
+                <div class="row white-body">
+                    <div class="form-group">
+                        <strong>Email sent to<p id='confirm-email'></p></strong>
+                        Didn't get the email?<button type="button" id="btn-resend" class="btn btn-link">RESEND</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ------------- Activate Single Sign ON ----------------- -->
+            <div id="tab-single-signon">
+                <div class="row header blue-header">
+                    <h4>Check your email to activate Single Sign On!</h4>
+                    <p>Since you have more than one account associaged with your email, we just sent a link that
+                        will enable you access to each of them with one set of credentials.</p>
+                </div>
+                <div class="error-message row alert alert-danger"></div>
+                <div class="row white-body">
+                    <div class="form-group">
+                        <strong>Email sent to<p id='confirm-email'></p></strong>
+                        Didn't get the email?<button type="button" id="btn-resend" class="btn btn-link">RESEND</button>
+                    </div>
+                     <div class="form-group">
+                        <strong>Your single sign on username:</strong><br />
+                        <p class='confirm-email'></p>
+                    </div>
+                    <br /><br />
+                </div>
+            </div>
+
+        </div>
+        <!--[if IE 8]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/ie8/0.2.5/ie8.js"></script>
+        <![endif]-->
+
+        <!--[if lte IE 9]>
+        <script src="https://cdn.auth0.com/js/polyfills/1.0/base64.min.js"></script>
+        <script src="https://cdn.auth0.com/js/polyfills/1.0/es5-shim.min.js"></script>
+        <![endif]-->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
+        <script src="https://cdn.auth0.com/js/auth0/9.2/auth0.min.js"></script>
+        <script src="https://cdn.auth0.com/js/polyfills/1.0/object-assign.min.js"></script>
+        <script>
+            $(function () {
+                // Startup show login form
+                $('#tab-login').show();
+                $('#tab-signup-email').hide();
+                $('#tab-get-password').hide();
+                $('#tab-verify-email').hide();
+                $('#tab-single-signon').hide();
+
+            });
+        </script>
+    </body>
+</html>
