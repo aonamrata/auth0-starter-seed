@@ -1,6 +1,13 @@
-<html>
-    <head>
-        <style type="text/css">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Notification</title>
+	<link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet">
+	<style type="text/css">
+		table td {border-collapse: collapse;}
             .icon {
                 color: #fff;
                 font-size: 1.5em;
@@ -32,8 +39,34 @@
             .button2 {border-radius: 4px;}
 
         </style>
-    </head>
-    <body>
+        
+</head>
+<body>
+	<div style="display:none;">
+	  {{ preview_text }}
+	</div>
+	<div style="display:none;">
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+	</div>
     <center>
         <table>
             <tr style="background-color: #13395F;color: white;">
@@ -60,33 +93,98 @@
 
                 </td>
             </tr>
-            <tr style="background-color: white;color: #13395F;">
-                <td>
-                    <h2>Connect with us</h2>
-                    <ul class="social inline-list">
-                        <ul>
-                            <li><a href="https://www.facebook.com/theorchard/" target="_blank">
-                                    <img src='https://workstation.theorchard.com/images/maintimages/social/facebook.png'/>
-                                </a>
-                            </li>
-                            <li><a href="https://www.instagram.com/the_orchard_/" target="_blank">
-                                    <img src='https://workstation.theorchard.com/images/maintimages/social/facebook.png'/>
-                            </li>
-                            <li><a href="https://twitter.com/orchtweets?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor" target="_blank">
-                                    <img src='https://workstation.theorchard.com/images/maintimages/social/twitter.png'/>
-                            </li>
-                            <li><a href="https://play.spotify.com/user/theorchardus/playlist/5KQ8jB8zuHjjJivfNayvnN" target="_blank">
-                                    <img src='https://workstation.theorchard.com/images/maintimages/social/facebook.png'/>
-                            </li>
-                            <li><a href="https://www.youtube.com/radiallive" target="_blank">
-                                    <img src='https://workstation.theorchard.com/images/maintimages/social/youtube.png'/>
-                            </li>
-                            <li><a href="http://www.dailyrindblog.com/feed/atom/" target="_blank">
-                                    <img src='https://workstation.theorchard.com/images/maintimages/social/rss.png'/>
-                            </li>
-                        </ul>
-                    </td>
-                    </tr>
+            <tr>
+				<td>
+						<table
+							cellspacing="0"
+							cellpadding="0"
+							border="0"
+							style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; width:100% !important; max-width:640px !important;"
+						>
+								<tr>
+										<td align="left" valign="top">
+												<h2 style="color:#093c59 !important; font-size:24px; font-weight:500; line-height:100%; margin:0; padding:10px 0 15px 19px;">Connect With Us</h2>
+												<div style="padding-left: 19px; list-style-type:none;">
+													<span style="display:inline-block; margin-right:10px;">
+														<a href="https://www.facebook.com/theorchard/" style="text-decoration:none;">
+															<img
+																src="https://cdn.theorchard.io/web-icons/social_facebook.png"
+																alt="facebook"
+																height="32"
+																width="32"
+																style="border:none; outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;"
+															>
+														</a>
+													</span>
+													<span style="display:inline-block; margin-right:10px;">
+														<a href="https://www.youtube.com/radiallive/" style="text-decoration:none;">
+															<img
+																src="https://cdn.theorchard.io/web-icons/social_youtube.png"
+																alt="youtube"
+																height="32"
+																width="32"
+																style="border:none; outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;"
+															>
+														</a>
+													</span>
+													<span style="display:inline-block; margin-right:10px;">
+														<a href="https://twitter.com/orchtweets" style="text-decoration:none;">
+															<img
+																src="https://cdn.theorchard.io/web-icons/social_twitter.png"
+																alt="twitter"
+																height="32"
+																width="32"
+																style="border:none; outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;"
+															>
+														</a>
+													</span>
+													<span style="display:inline-block; margin-right:10px;">
+														<a href="https://www.linkedin.com/company/the-orchard/" style="text-decoration:none;">
+															<img
+																src="https://cdn.theorchard.io/web-icons/social_linkedin.png"
+																alt="linkedin"
+																height="32"
+																width="32"
+																style="border:none; outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;"
+															>
+														</a>
+													</span>
+													<span style="display:inline-block; margin-right:10px;">
+														<a href="https://www.instagram.com/the_orchard_/" style="text-decoration:none;">
+															<img
+																src="https://cdn.theorchard.io/web-icons/social_instagram.png"
+																alt="instagram"
+																height="32"
+																width="32"
+																style="border:none; outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;"
+															>
+														</a>
+													</span>
+													<span style="display:inline-block; margin-right:10px;">
+														<a href="https://www.theorchard.com/" style="text-decoration:none;">
+															<img
+																src="https://cdn.theorchard.io/web-icons/social_orchard.png"
+																alt="theorchard"
+																height="32"
+																width="32"
+																style="border:none; outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;"
+															>
+														</a>
+													</span>
+												</ul>
+												<div style="color:#a8a0a0; font-size:10px; padding: 20px 0 0 0">
+													<p>
+															This email is an automated notification which is unable to receive replies. If you have any questions please email your label manager
+													</p>
+													<p>
+					                    If you believe this has been sent to you in error, please inform your client manager.
+													</p>
+				                </div>
+										</td>
+								</tr>
+						</table>
+				</td>
+		</tr>
 
         </table>
     </center>

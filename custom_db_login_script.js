@@ -1,8 +1,9 @@
 //var sha3_512 = require('js-sha3').sha3_512;
 //var raven = require('raven');
-var TO_MIGRATE = ["juanp01"];
 
 function login(username, password, callback) {
+  var TO_MIGRATE = ["juanp01"];
+
     var raven = require('raven');
     raven.config(configuration.sentry_dns).install();
 
@@ -11,14 +12,28 @@ function login(username, password, callback) {
     raven.setContext({user: {username: username}});
 
     if (arrayOfStrings.length === 3 && arrayOfStrings[1] === 'auth0') {
-        var user_obj = {
-            auth0_id: arrayOfStrings[1] + '|' + arrayOfStrings[2],
-            user_id: 'alw:' + orchard_username, // this is vcid
-            email: password
+        var signon = {
+            uri: configuration.ows_user + '/users/auth0/single-signon',
+            //uri: 'https://qa-ows-users-proxy.theorchard.io/users/verify-login',
+            method: 'POST',
+            json: {
+                auth0_id: arrayOfStrings[1] + '|' + arrayOfStrings[2],
+                user_id: 'alw:' + orchard_username, // this is vcid
+                email: password
+            }
         };
-        raven.captureMessage(user_obj);
+        //raven.captureMessage(user_obj);
         // This is single sign on scenario
-        return callback(null, user_obj);
+        request.post(signon, function (err, response, body) {
+            if (response && response.statusCode === 404) {
+                raven.captureMessage(body);
+                return callback(new ValidationError('failed-single-signon', 'Failed to do single-signon'));
+            }
+            if (err) {
+                raven.captureException(err);
+                return callback(new ValidationError('failed-single-signon', 'Failed to do single-signon'));
+            }
+        });
     }
 
 
@@ -60,7 +75,7 @@ function login(username, password, callback) {
         if (response.statusCode === 200 && body.vend_contact_id !== undefined) {
             // legacy login success
             var return_value = '';
-            if (TO_MIGRATE.indexOf(username) < 0) {
+            if (false && TO_MIGRATE.indexOf(username) < 0) {
                 // don't migrate them
                 return_value = outputHash + "|" + body.vend_contact_id;
                 return callback(new ValidationError('dont-migrated', return_value));
